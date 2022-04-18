@@ -1,0 +1,68 @@
+@main(s"O stronie") {
+<div class="article-box">
+    <h2>Serwis WWW</h2>
+    <p>Projekt obejmuje prosty system zarządzania danymi albumów muzycznych, obejmując dane o artystach (wykonawcach), albumach oraz utworach 
+        w&nbsp;ramach albumów. Zgodnie z&nbsp;wymaganiami, może być obsługiwany także za pomocą starszych wersji przeglądarek WWW. Dane w ramach
+        serwisu są zorganizowane w&nbsp;ramach jednoznacznej hierarchii (artysta - album - utwór, gdzie każdy album musi mieć przypisanego
+        dokładnie jednego artystę (wykonawcę) i każdy utwór musi mieć przypisany dokładnie jeden album), ale użytkownik ma możliwość przeglądania
+        wszystkich albumów i&nbsp;utworów, bez podawania nadrzędnego obiektu.</p>
+
+    <h3>Projekt techniczny</h3>
+
+    <h4>Klient</h4>
+    <p>Część kliencka zbudowana jest z interfejsu HTML, akruszy kaskadowe i&nbsp;skryptów JS. Pliki HTML zlokalizowane są w podkatalogu 
+        <em>views/</em>, a arkusze i&nbsp;skrypty w <em>public/</em>. Intefejs HTML jest składany z szablonu <em>main.scala.html</em>, 
+        w który wstawiany jest (w miejscu instrukcji <code>@@content</code>) wybrany szablon z treścią witryny: <em>about.scala.html</em> 
+        dla tejże strony lub odpowiedni widok z podkatalogów <em>albums/</em>, <em>artists/</em> lub <em>tracks/</em>. Formularze
+        dla aktualizacji danych i dodania nowego obiektu obsługują te same szablony.</p>
+
+    <p>Arkusze kaskadowe (CSS) zostały dobrane tak, aby utworzyć możliwie prosty, geometryczny interfejs. Minimalnie bardziej
+        zawansowane techniki zostały użyte do stworzenia paska nawigacji oraz menu - chociaż są zbudowane za pomocą list, arkusze
+        wymuszają wyświetlanie ich jako poziomo uszeregowanych bloków. Kolorystyka została zaczerpnięta z dokumentacji biblioteki 
+        <em>Play Framework</em>, tj. użycie kolorów <span style="color: #92d13d">#92d13d</span>, <span style="color: #454545">#454545</span> 
+        czy <span style="color: #939393">#939393</span>.</p>
+
+    <p>Skrypty w języku JS zostały zaprojektowane tak, aby strona działała poprawnie nawet z wyłączoną ich obsługą. zostały
+        one wykorzystane do sprawdzenia poprawności danych w formularzach <em>przed</em> wysłaniem danych do serwera. Serwer, 
+        oczywiście, również po swojej stronie sprawdza poprawność danych. Wyłączenie JS nie przeszkodzi w dodaniu / modyfikowaniu
+        danych za pomocą formularzy.</p>
+
+    <h4>Serwer</h4>
+
+    <figure>
+        <img src="@routes.Assets.versioned("images/backend.png")" alt="Schemat architektury - serwer" />
+        <figcaption>Schemat architektury części serwerowej.</figcaption>
+    </figure>    
+
+    <p>Część serwerowa projektu została napisana w języku <em>Scala</em>, przy użyciu biblioteki <em>Play Framework 2</em>. 
+        Wybór jest podyktowany znajomością narzędzi przez autora oraz (względnie) czystą architekturą rozwiązania opartego
+        o PF, która pozwala łatwo przeglądać warstwy serwisu (szablony HTML, kontrolery, klasy encji itd).</p>
+
+    <p>Ze względu na skupienie zadania projektowego na technologiach klienckich (HTML, arkusze kaskadowe i skrypty JS), część
+        serwerowa została napisany w sposób najmożliwiej prosty, bez zawansowanych funkcji (bez pełnego interfejsu typu REST
+        czy obsługi sesji bądź uwierzytelnienia). Interfejs serwera jest <em>podobny</em> do modelu REST, ale nie wykorzystuje
+        słów HTTP zgodnie z definicją standardu. Wynika to z konieczności obsługi wszystkich żądań za pomocą wyłącznie żądań
+        GET i POST (<a href="https://www.w3schools.com/html/html_forms_attributes.asp" taregt="_top">za W3C</a>). Prawdziwe
+        API w stylu REST używałoby też żądań PUT / PATCH / DELETE, co się kłóci z wymaganiem kompatybilności z możliwie wieloma
+        przeglądarkami.</p>
+
+    <p>Biblioteka serwerowa dostarcza również proste zabezpieczenie CSRF: podczas generowania formularza serwer wylicza pewien
+        token CSRF (widoczny jako pole typu <em>hidden</em> w formularzu). Po zatwierdzeniu i wysłaniu danych formlarza przez
+        użytkownia Wartość tego tokena jest dołączana do danych - jeśli nie będzie zgodna z wygenerowaną wcześniej, takie żądanie
+        zostanie odrzucone.</p>
+
+    <h3>Znane braki</h3>
+    <ol>
+        <li>Zastosowana baza danych jest bazą typu <em>in memory</em>, przechowującą dane w pamięci, w sposób nietrwały.
+            Jest to wygodne na potrzeby tworzenia i demonstracji rozwiązania, ale docelowy system powinien jednak dane
+            zapisywać w prawdziwej bazie danych. </li>
+        <li>Serwis nie obsługuje paginacji. Jej implementacja nie jest skomplikowana, ale nie wnosi wiele do części klienckiej,
+            dlatego została pominięta. Przy objętości danych demonstracyjnych można nadal względnie wygodnie korzystać z serwisu.</li>
+        <li>Nie zostało zastosowane szyfrowanie przy użyciu SSL - ze względu na problematyczne generowanie certyfikatów dla
+            serwera localhost (dla którego nie jest możliwe wystawienie pełnego poprawnego certyfikatu innego niż self-signed). Dla
+            użytej w implementacji biblioteki <em>Play Framework</em> popularnym rozwiązaniem jest wykorzystanie <code>reverse-proxy</code>,
+            np. <em>nginx</em>, do nasłuchiwania ruchu szyfrowanego na porcie 443 i&nbsp;przekazywania go dalej <em>lokalnie</em>
+            na uruchomiony pod adresem <em>127.0.0.1:9000</em> proces aplikacji.</li>
+    </ol>
+</div>
+}

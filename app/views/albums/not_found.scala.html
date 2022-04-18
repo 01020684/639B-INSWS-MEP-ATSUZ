@@ -1,0 +1,5 @@
+@()(implicit flash: Flash)
+
+@main("Nie znaleziono albumu", flash.get("success"), flash.get("error")) {
+  <h2>Podany album nie znajduje się w bazie.</h2>
+}

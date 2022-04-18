@@ -1,0 +1,5 @@
+@()(implicit flash: Flash)
+
+@main("Nie znaleziono artysty", flash.get("success"), flash.get("error")) {
+  <h2>Podany artysta nie znajduje się w bazie.</h2>
+}

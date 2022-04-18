@@ -1,0 +1,31 @@
+@(artists: List[Artist])(implicit flash: Flash)
+
+@main("Artyści", flash.get("success"), flash.get("error")) {
+  <table class="content-list">
+    <thead>
+      <tr>
+        <th>Wykonawca</th>
+        <th>Akcje</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    @for(artist <- artists) {
+      <tr>
+        <td>@artist.name</td>
+        <td>
+          <a href="@routes.AlbumsController.list(Some(artist.id))"><button class="default small">Przeglądaj albumy</button></a>
+          <a href="@routes.ArtistsController.showFormUpdate(artist.id)"><button class="default small">Zmień dane</button></a>
+          <a href="@routes.ArtistsController.delete(artist.id)"><button class="default small">Usuń artystę</button></a>
+        </td>
+      </tr>
+    }
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="2"><a href="@routes.ArtistsController.showFormAdd()"><button class="default">Dodaj nowego artystę</button></a></td>
+      </tr>
+    </tfoot>
+  </table>
+}

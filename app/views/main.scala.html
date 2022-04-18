@@ -1,0 +1,69 @@
+@*
+ * This template is called from the `index` template. This template
+ * handles the rendering of the page header and body tags. It takes
+ * two arguments, a `String` for the title of the page and an `Html`
+ * object to insert into the body of the page.
+ *@
+@(title: String, success: Option[String] = None, error: Option[String] = None, cArtist: Option[Artist] = None, cAlbum: Option[Album] = None, cTrack: Option[Track] = None)(content: Html)
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>@title</title>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
+
+        <script src="@routes.Assets.versioned("javascripts/jquery-3.6.0.js")"></script>
+        <script src="@routes.Assets.versioned("javascripts/main.js")"></script>
+    </head>
+    <body>
+        <div id="container-main">
+            <header>
+                <div class="page-content">
+                    <h1>@title</h1>
+                </div>
+
+                <nav>
+                    <div class="page-content">
+                        <ul>
+                            <li><a href="@routes.ArtistsController.list()">Artyści</a></li>
+                            <li><a href="@routes.AlbumsController.list(None)">Albumy</a></li>
+                            <li><a href="@routes.TracksController.list(None)">Utwory</a></li>
+                            <li><a href="@routes.HomeController.about()">O stronie</a></li>
+                        </ul>
+                    </div>
+                </nav>
+
+            </header>
+
+            <section>
+                <div class="page-content">
+                    <div id="flashContainer">
+                        @if(success.nonEmpty) {
+                        <div class="flash success">@(success.get)</div>
+                        }
+                        
+                        @if(error.nonEmpty) {
+                        <div class="flash error">@(error.get)</div>
+                        }
+                    </div>
+
+                    @content
+                </div>
+            </section>
+
+            <footer>
+                <nav class="breadcrumbs">
+                    <div class="page-content">
+                        <ul>
+                            <li><a href="@routes.ArtistsController.list">Start</a></li>
+                            @if(cArtist.nonEmpty) { <li><a href="@routes.AlbumsController.list(cArtist.map(_.id))">@(cArtist.get.name)</a></li> }
+                            @if(cAlbum.nonEmpty) { <li><a href="@routes.AlbumsController.list(cAlbum.map(_.id))">@(cAlbum.get.title)</a></li> }
+                            @if(cTrack.nonEmpty) { <li><a href="@routes.AlbumsController.list(cAlbum.map(_.id))">@(cTrack.get.title)</a></li> }
+                        </ul>
+                    </div>
+                </nav>
+            </footer>
+        </div>
+    </body>
+</html>

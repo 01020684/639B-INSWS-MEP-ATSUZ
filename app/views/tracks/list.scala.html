@@ -1,0 +1,39 @@
+@(tracks: List[Track], album: Option[Album], artist: Option[Artist])(implicit flash: Flash)
+
+@main("Utwory", flash.get("success"), flash.get("error"), artist, album) {
+  <table class="content-list">
+    <thead>
+      <tr>
+        <th>Artysta</th>
+        <th colspan="2">Album</th>
+        <th>Ścieżka</th>
+        <th>Tytuł</th>
+        <th>Czas trwania</th>
+        <th>Akcje</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    @for(track <- tracks) {
+      <tr>
+        <td>@track.album.artist.name</td>
+        <td class="numeric">@track.album.releaseYear</td>
+        <td>@track.album.title</td>
+        <td class="numeric">@track.trackNo</td>
+        <td>@track.title</td>
+        <td class="numeric">@{track.duration / 60}:@{if(track.duration % 60 >= 10) "" else "0"}@{track.duration % 60}</td>
+        <td>
+          <a href="@routes.TracksController.showFormUpdate(track.id)"><button class="default small">Zmień dane</button></a>
+          <a href="@routes.TracksController.showDelete(track.id)"><button class="default small">Usuń utwór</button></a>
+        </td>
+      </tr>
+    }
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="7"><a href="@routes.TracksController.showFormAdd(album.map(_.id))"><button class="default">Dodaj nowy utwór</button></a></td>
+      </tr>
+    </tfoot>
+  </table>
+}

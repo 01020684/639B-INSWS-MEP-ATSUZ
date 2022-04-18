@@ -1,0 +1,37 @@
+@(artist: Option[Artist])(implicit flash: Flash, request: RequestHeader)
+@import helper._
+
+@main(s"Artysta: ${artist.map(_.name).getOrElse("dodawanie nowego")}", flash.get("success"), flash.get("error"), artist) {
+
+<form action="@artist.map(a => routes.ArtistsController.update(a.id)).getOrElse(routes.ArtistsController.add())" method="POST" id="artistForm">
+
+    @CSRF.formField
+
+    <div class="form-group">
+        <label for="name">Nazwa artysty:</label>
+        <input name="name" value="@artist.map(_.name)" />
+    </div>
+    
+    <div class="form-group">
+        <input type="submit" value="Zapisz dane" />
+    </div>
+    
+</form>
+
+<script language="javascript">
+    $("#artistForm").on("submit", function() {
+        clearFlash();
+
+        var isValid = true;
+
+        var fName = $("#artistForm input[name=name]").val();
+        
+        if(fName.length <= 0) {
+            isValid = false;
+            addFlash("error", "Nazwa artysty nie może być pusta.");
+        }
+        
+        return isValid;
+    });
+</script>
+}

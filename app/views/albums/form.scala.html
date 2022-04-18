@@ -1,0 +1,93 @@
+@(album: Option[Album], artists: List[Artist])(implicit flash: Flash, request: RequestHeader))
+@import helper._
+
+@main(s"Album: ${album.map(_.title).getOrElse("dodawanie nowego")}", flash.get("success"), flash.get("error"), album.map(_.artist), album) {
+
+<form action="@album.map(a => routes.AlbumsController.update(a.id)).getOrElse(routes.AlbumsController.add())" method="POST" id="albumForm">
+
+    @CSRF.formField
+
+    <div class="form-group">
+        <label for="artist_id">Wykonawca:</label>
+        <select name="artist_id" value="@album.map(_.artist.id)">
+        @for(artist <- artists) {
+            @if(album.map(_.artist.id).getOrElse("") == artist.id) {
+                <option value="@artist.id" selected>@artist.name</option>
+            } else {
+                <option value="@artist.id">@artist.name</option>
+            }
+        }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="release_year">Rok wydania:</label>
+        <input name="release_year" value="@album.map(_.releaseYear)" type="number" />
+    </div>
+    
+    <div class="form-group">
+        <label for="title">Tytuł:</label>
+        <input name="title" value="@album.map(_.title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="tracks_no">Liczba utworów:</label>
+        <input name="tracks_no" value="@album.map(_.tracksNo)" type="number" />
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Zapisz dane" />
+    </div>
+    
+</form>
+
+<script language="javascript">
+    $("#albumForm").on("submit", function() {
+        clearFlash();
+
+        var isValid = true;
+
+        var fArtist = $("#albumForm select[name=artist_id]").val();
+        var fReleaseYear = $("#albumForm input[name=release_year]").val();
+        var fTitle = $("#albumForm input[name=title]").val();
+        var fTracksNo = $("#albumForm input[name=tracks_no]").val();
+        
+        if(fArtist.length <= 0) {
+            isValid = false;
+            addFlash("error", "Wykonawca nie może być pusty.");
+        }
+
+        if(fReleaseYear.length <= 0) {
+            isValid = false;
+            addFlash("error", "Rok wydania nie może być pusty.")
+        } else {
+            if(Number(fReleaseYear) < 1900) {
+                isValid = false;
+                addFlash("error", "Rok wydania musi być późniejszy niż 1900.")
+            }
+
+            if(Number(fReleaseYear) >= 2025) {
+                isValid = false;
+                addFlash("error", "Rok wydania musi być wcześniejszy niż 2025.")
+            }
+        }
+
+        if(fTitle.length <= 0) {
+            isValid = false;
+            addFlash("error", "Tytuł nie może być pusty.")
+        }
+
+        if(fTracksNo.length <= 0) {
+            isValid = false;
+            addFlash("error", "Liczba utworów nie może być pusta.")
+        } else {
+            if(Number(fTracksNo) <= 0) {
+                isValid = false;
+                addFlash("error", "Liczba utworów musi być liczbą dodatnią.")
+            }
+        }
+
+        return isValid;
+    });
+</script>
+}

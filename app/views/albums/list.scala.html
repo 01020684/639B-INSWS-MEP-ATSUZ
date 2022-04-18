@@ -1,0 +1,38 @@
+@(albums: List[Album], artist: Option[Artist])
+
+@main("Albumy", cArtist = artist) {
+  <table class="content-list">
+    <thead>
+      <tr>
+        <th>Rok wydania</th>
+        <th>Wykonawca</th>
+        <th>Tytuł</th>
+        <th>Liczba utworów</th>
+        <th>Akcje</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    @for(album <- albums) {
+      <tr>
+        <td class="numeric">@album.releaseYear</td>
+        <td>@album.artist.name</td>
+        <td>@album.title</td>
+        <td class="numeric">@album.tracksNo</td>
+        <td>
+
+          <a href="@routes.TracksController.list(Some(album.id))"><button class="default small">Przeglądaj utwory</button></a>
+          <a href="@routes.AlbumsController.showFormUpdate(album.id)"><button class="default small">Zmień dane</button></a>
+          <a href="@routes.AlbumsController.showDelete(album.id)"><button class="default small">Usuń album</button></a>
+        </td>
+      </tr>
+    }
+    </tbody>
+
+    <tfoot>
+      <tr>
+        <td colspan="5"><a href="@routes.AlbumsController.showFormAdd(artist.map(_.id))"><button class="default">Dodaj nowy album</button></a></td>
+      </tr>
+    </tfoot>
+  </table>
+}

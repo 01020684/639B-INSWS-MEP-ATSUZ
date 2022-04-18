@@ -1,0 +1,92 @@
+@(track: Option[Track], albums: List[Album])(implicit flash: Flash, request: RequestHeader)
+@import helper._
+
+@main(s"Utwór: ${track.map(_.title).getOrElse("dodawanie nowego")}", flash.get("success"), flash.get("error"), track.map(_.album.artist), track.map(_.album), track) {
+
+<form action="@track.map(a => routes.TracksController.update(a.id)).getOrElse(routes.TracksController.add())" method="POST" id="trackForm">
+@CSRF.formField        
+
+    <div class="form-group">
+        <label for="album_id">Album:</label>
+        <select name="album_id" value="@track.map(_.album.id)">
+        @for(album <- albums) {
+            @if(track.map(_.album.id).getOrElse("") == album.id) {
+                <option value="@album.id" selected>@album.releaseYear @album.title</option>
+            } else {
+                <option value="@album.id">@album.releaseYear @album.title</option>
+            }
+        }
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="track_no">Numer ścieżki:</label>
+        <input name="track_no" value="@track.map(_.trackNo)" type="number" />
+    </div>
+    
+    <div class="form-group">
+        <label for="title">Tytuł:</label>
+        <input name="title" value="@track.map(_.title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="duration">Czas trwania [s]:</label>
+        <input name="duration" value="@track.map(_.duration)" type="number" />
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Zapisz dane" />
+    </div>
+    
+</form>
+
+<script language="javascript">
+    $("#trackForm").on("submit", function() {
+        clearFlash();
+
+        var isValid = true;
+
+        var fAlbum = $("#trackForm select[name=album_id]").val();
+        var fTrackNo = $("#trackForm input[name=track_no]").val();
+        var fTitle = $("#trackForm input[name=title]").val();
+        var fDuration = $("#trackForm input[name=duration]").val();
+        
+        if(fAlbum.length <= 0) {
+            isValid = false;
+            addFlash("error", "Album nie może być pusty.");
+        }
+
+        if(fTrackNo.length <= 0) {
+            isValid = false;
+            addFlash("error", "Numer ścieżki nie może być pusty.")
+        } else {
+            if(Number(fTrackNo) <= 0) {
+                isValid = false;
+                addFlash("error", "Numer ścieżki musi być liczbą dodatnią.")
+            }
+        }
+
+        if(fTitle.length <= 0) {
+            isValid = false;
+            addFlash("error", "Tytuł nie może być pusty.")
+        }
+
+        if(fTitle.length <= 0) {
+            isValid = false;
+            addFlash("error", "Tytuł nie może być pusty.")
+        } else {
+            if(Number(fDuration) <= 0) {
+                isValid = false;
+                addFlash("error", "Długość utworu musi być dodatnia.")
+            }
+
+            if(Number(fDuration) > 90 * 60) {
+                isValid = false;
+                addFlash("error", "Długość utworu nie może przekraczać 90min.")
+            }
+        }
+        
+        return isValid;
+    });
+</script>
+}

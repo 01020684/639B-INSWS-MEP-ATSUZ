@@ -1,0 +1,14 @@
+@(artist: Artist)(implicit flash: Flash, request: RequestHeader)))
+@import helper._
+
+@main(s"Usuwanie artysty: ${artist.name}", None, flash.get("error"), Some(artist)) {
+
+<div class="message-box">
+    <h2>Czy na pewno usunąć artystę: @artist.name?</h2>
+    <form action="@routes.ArtistsController.delete(artist.id)" method="POST" class="inline">
+        @CSRF.formField        
+        <input type="submit" class="default danger" value="Tak" />
+    </form>
+    <a href="@routes.ArtistsController.list()"><button class="default">Nie</button></a>
+</div>
+}

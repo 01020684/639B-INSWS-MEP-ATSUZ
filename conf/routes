@@ -1,0 +1,35 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# https://www.playframework.com/documentation/latest/ScalaRouting
+# ~~~~
+
+# An example controller showing a sample home page
+GET     /                           controllers.HomeController.index()
+GET     /about                      controllers.HomeController.about()
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+GET     /artists                    controllers.ArtistsController.list()
+GET     /artist                     controllers.ArtistsController.showFormAdd()
+POST    /artist                     controllers.ArtistsController.add()
+GET     /artist/:id                 controllers.ArtistsController.showFormUpdate(id: java.util.UUID)
+POST    /artist/:id                 controllers.ArtistsController.update(id: java.util.UUID)
+GET     /artist/:id/delete          controllers.ArtistsController.showDelete(id: java.util.UUID)
+POST    /artist/:id/delete          controllers.ArtistsController.delete(id: java.util.UUID)
+
+GET     /albums                     controllers.AlbumsController.list(artistId: Option[java.util.UUID])
+GET     /album                      controllers.AlbumsController.showFormAdd(artist: Option[java.util.UUID])
+POST    /albums                     controllers.AlbumsController.add()
+GET     /album/:id                  controllers.AlbumsController.showFormUpdate(id: java.util.UUID)
+POST    /album/:id                  controllers.AlbumsController.update(id: java.util.UUID)
+GET     /album/:id/delete           controllers.AlbumsController.showDelete(id: java.util.UUID)
+POST    /album/:id/delete           controllers.AlbumsController.delete(id: java.util.UUID)
+
+GET     /tracks                     controllers.TracksController.list(albumId: Option[java.util.UUID])
+GET     /track                      controllers.TracksController.showFormAdd(album: Option[java.util.UUID])
+POST    /track                      controllers.TracksController.add()
+GET     /track/:id                  controllers.TracksController.showFormUpdate(id: java.util.UUID)
+POST    /track/:id                  controllers.TracksController.update(id: java.util.UUID)
+GET     /track/:id/delete           controllers.TracksController.showDelete(id: java.util.UUID)
+POST    /track/:id/delete           controllers.TracksController.delete(id: java.util.UUID)

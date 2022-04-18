@@ -1,0 +1,13 @@
+@(track: Track)(implicit flash: Flash, request: RequestHeader)))
+@import helper._
+
+@main(s"Usuwanie utworu: ${track.title}", None, flash.get("error"), Some(track.album.artist), Some(track.album), Some(track)) {
+<div class="message-box">
+    <h2>Czy na pewno usunąć #@track.trackNo @track.title?</h2>
+    <form action="@routes.TracksController.delete(track.id)" method="POST" class="inline">
+        @CSRF.formField        
+        <input type="submit" class="default danger" value="Tak" />
+    </form>
+    <a href="@routes.TracksController.list(None)"><button class="default">Nie</button></a>
+</div>
+}

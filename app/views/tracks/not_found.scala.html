@@ -1,0 +1,5 @@
+@()(implicit flash: Flash)
+
+@main("Nie znaleziono utworu", flash.get("success"), flash.get("error")) {
+  <h2>Podany utwór nie znajduje się w bazie.</h2>
+}
